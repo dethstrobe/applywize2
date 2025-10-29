@@ -1,17 +1,18 @@
-import { render, route } from "rwsdk/router";
-import { defineApp } from "rwsdk/worker";
+import { render, route } from "rwsdk/router"
+import { defineApp } from "rwsdk/worker"
 
-import { Document } from "@/app/Document";
-import { setCommonHeaders } from "@/app/headers";
-import { Home } from "@/app/pages/Home";
+import { Document } from "@/app/Document"
+import { setCommonHeaders } from "@/app/headers"
+import { Home } from "@/app/pages/Home"
+export { AppDurableObject } from "@/db/durableObject"
 
-export type AppContext = {};
+export type AppContext = {}
 
 export default defineApp([
   setCommonHeaders(),
   ({ ctx }) => {
     // setup ctx here
-    ctx;
+    ctx
   },
   render(Document, [route("/", Home)]),
-]);
+])

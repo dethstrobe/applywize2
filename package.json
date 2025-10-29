@@ -20,6 +20,7 @@
     "generate": "rw-scripts ensure-env && wrangler types",
     "check": "npm run generate && npm run types",
     "types": "tsc",
+    "seed": "rwsdk worker-run ./src/scripts/seed.ts",
     "test": "playwright test --ui",
     "doc": "TEST2DOC=true playwright test --config=playwright-test2doc.config.ts"
   },
@@ -38,7 +39,7 @@
     "react-day-picker": "^9.11.1",
     "react-dom": "19.3.0-canary-4fdf7cf2-20251003",
     "react-server-dom-webpack": "19.3.0-canary-4fdf7cf2-20251003",
-    "rwsdk": "1.0.0-beta.18",
+    "rwsdk": "1.0.0-beta.22",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1"
   },

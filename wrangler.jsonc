@@ -26,4 +26,18 @@
   "vars": {
     // Add your environment variables here
   },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "APP_DURABLE_OBJECT",
+        "class_name": "AppDurableObject",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["AppDurableObject"],
+    },
+  ],
 }

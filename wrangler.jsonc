@@ -36,16 +36,12 @@
         "name": "SESSION_DURABLE_OBJECT",
         "class_name": "SessionDurableObject",
       },
-      {
-        "name": "PASSKEY_DURABLE_OBJECT",
-        "class_name": "PasskeyDurableObject",
-      },
     ],
   },
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["AppDurableObject", "PasskeyDurableObject"],
+      "new_sqlite_classes": ["AppDurableObject"],
     },
   ],
 }

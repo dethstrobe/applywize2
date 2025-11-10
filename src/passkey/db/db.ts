@@ -1,25 +1,15 @@
-import { env } from "cloudflare:workers"
-
-import { type Database, createDb } from "rwsdk/db"
+import { db, type User, type Credential } from "@/db/db"
 import debug from "rwsdk/debug"
-import { type migrations } from "./migrations"
 
 const log = debug("passkey:db")
 
-export type PasskeyDatabase = Database<typeof migrations>
-export type User = PasskeyDatabase["users"]
-export type Credential = PasskeyDatabase["credentials"]
-
-export const db = createDb<PasskeyDatabase>(
-  env.PASSKEY_DURABLE_OBJECT,
-  "passkey-main",
-)
-
 export async function createUser(username: string): Promise<User> {
+  const now = new Date().toISOString()
   const user: User = {
     id: crypto.randomUUID(),
     username,
-    createdAt: new Date().toISOString(),
+    createdAt: now,
+    updatedAt: now,
   }
   await db.insertInto("users").values(user).execute()
   return user

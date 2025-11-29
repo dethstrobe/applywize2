@@ -32,3 +32,4 @@ worker-configuration.d.ts
 /blob-report/
 /playwright/.cache/
 playwright/.auth
+test-passkey.json

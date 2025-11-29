@@ -6,6 +6,7 @@ import playwrightPlugin from "eslint-plugin-playwright"
 import eslintConfigPrettier from "eslint-config-prettier"
 import tseslint from "typescript-eslint"
 import eslint from "@eslint/js"
+import globals from "globals"
 
 export default [
   {
@@ -27,6 +28,8 @@ export default [
   },
 
   eslint.configs.recommended,
+  ...tseslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
 
   {
     files: ["src/**/*.{ts,tsx}", "tests/**/*.ts"],
@@ -36,6 +39,10 @@ export default [
       parserOptions: {
         project: "./tsconfig.json",
         tsconfigRootDir: import.meta.dirname,
+      },
+      globals: {
+        ...globals.node,
+        ...globals.browser,
       },
     },
 
@@ -47,7 +54,6 @@ export default [
     },
 
     rules: {
-      ...tseslint.configs.recommendedTypeChecked[0].rules,
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/await-thenable": "error",
       "@typescript-eslint/no-misused-promises": "error",

@@ -1,4 +1,5 @@
-import { defineConfig, devices } from "@playwright/test"
+import { defineConfig } from "@playwright/test"
+import { projects } from "./playwright.config.js"
 import "@test2doc/playwright/types"
 
 export default defineConfig({
@@ -22,12 +23,7 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   retries: 0,
-  projects: [
-    {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-    },
-  ],
+  projects,
   webServer: {
     command: "pnpm dev",
     url: "http://localhost:5173",

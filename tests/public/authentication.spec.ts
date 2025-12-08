@@ -1,6 +1,6 @@
 import { test, expect, Page, BrowserContext } from "@playwright/test"
 import { randomUUID } from "crypto"
-import { selectors } from "./util"
+import { selectors } from "../util"
 import { withDocCategory, withDocMeta } from "@test2doc/playwright/DocMeta"
 import { screenshot } from "@test2doc/playwright/screenshots"
 

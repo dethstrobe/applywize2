@@ -1,4 +1,4 @@
-"use server";
+"use server"
 import {
   AuthenticationResponseJSON,
   generateAuthenticationOptions,
@@ -6,33 +6,34 @@ import {
   RegistrationResponseJSON,
   verifyAuthenticationResponse,
   verifyRegistrationResponse,
-} from "@simplewebauthn/server";
+} from "@simplewebauthn/server"
 
-import { sessions } from "@/session/store";
-import { env } from "cloudflare:workers";
-import { requestInfo } from "rwsdk/worker";
+import { sessions } from "@/session/store"
+import { env } from "cloudflare:workers"
+import { requestInfo } from "rwsdk/worker"
 import {
   createCredential,
   createUser,
   getCredentialById,
   getUserById,
   updateCredentialCounter,
-} from "./db";
+} from "./db"
 
 function getWebAuthnConfig(request: Request) {
-  const rpID = env.WEBAUTHN_RP_ID ?? new URL(request.url).hostname;
-  const rpName = import.meta.env.VITE_IS_DEV_SERVER
-    ? "Development App"
-    : env.WEBAUTHN_APP_NAME;
+  const rpID = env.WEBAUTHN_RP_ID ?? new URL(request.url).hostname
+  const rpName =
+    import.meta.env.VITE_IS_DEV_SERVER ?
+      "Development App"
+    : env.WEBAUTHN_APP_NAME
   return {
     rpName,
     rpID,
-  };
+  }
 }
 
 export async function startPasskeyRegistration(username: string) {
-  const { rpName, rpID } = getWebAuthnConfig(requestInfo.request);
-  const { response } = requestInfo;
+  const { rpName, rpID } = getWebAuthnConfig(requestInfo.request)
+  const { response } = requestInfo
 
   const options = await generateRegistrationOptions({
     rpName,
@@ -44,40 +45,40 @@ export async function startPasskeyRegistration(username: string) {
       // Prefer user verification (biometric, PIN, etc.), but allow authentication even if it's not available
       userVerification: "preferred",
     },
-  });
+  })
 
-  await sessions.save(response.headers, { challenge: options.challenge });
+  await sessions.save(response.headers, { challenge: options.challenge })
 
-  return options;
+  return options
 }
 
 export async function startPasskeyLogin() {
-  const { rpID } = getWebAuthnConfig(requestInfo.request);
-  const { response } = requestInfo;
+  const { rpID } = getWebAuthnConfig(requestInfo.request)
+  const { response } = requestInfo
 
   const options = await generateAuthenticationOptions({
     rpID,
     userVerification: "preferred",
     allowCredentials: [],
-  });
+  })
 
-  await sessions.save(response.headers, { challenge: options.challenge });
+  await sessions.save(response.headers, { challenge: options.challenge })
 
-  return options;
+  return options
 }
 
 export async function finishPasskeyRegistration(
   username: string,
   registration: RegistrationResponseJSON,
 ) {
-  const { request, response } = requestInfo;
-  const { origin } = new URL(request.url);
+  const { request, response } = requestInfo
+  const { origin } = new URL(request.url)
 
-  const session = await sessions.load(request);
-  const challenge = session?.challenge;
+  const session = await sessions.load(request)
+  const challenge = session?.challenge
 
   if (!challenge) {
-    return false;
+    return false
   }
 
   const verification = await verifyRegistrationResponse({
@@ -85,41 +86,41 @@ export async function finishPasskeyRegistration(
     expectedChallenge: challenge,
     expectedOrigin: origin,
     expectedRPID: (env as any).WEBAUTHN_RP_ID || new URL(request.url).hostname,
-  });
+  })
 
   if (!verification.verified || !verification.registrationInfo) {
-    return false;
+    return false
   }
 
-  await sessions.save(response.headers, { challenge: null });
+  await sessions.save(response.headers, { challenge: null })
 
-  const user = await createUser(username);
+  const user = await createUser(username)
 
   await createCredential({
     userId: user.id,
     credentialId: verification.registrationInfo.credential.id,
     publicKey: verification.registrationInfo.credential.publicKey,
     counter: verification.registrationInfo.credential.counter,
-  });
+  })
 
-  return true;
+  return true
 }
 
 export async function finishPasskeyLogin(login: AuthenticationResponseJSON) {
-  const { request, response } = requestInfo;
-  const { origin } = new URL(request.url);
+  const { request, response } = requestInfo
+  const { origin } = new URL(request.url)
 
-  const session = await sessions.load(request);
-  const challenge = session?.challenge;
+  const session = await sessions.load(request)
+  const challenge = session?.challenge
 
   if (!challenge) {
-    return false;
+    return false
   }
 
-  const credential = await getCredentialById(login.id);
+  const credential = await getCredentialById(login.id)
 
   if (!credential) {
-    return false;
+    return false
   }
 
   const verification = await verifyAuthenticationResponse({
@@ -133,27 +134,32 @@ export async function finishPasskeyLogin(login: AuthenticationResponseJSON) {
       publicKey: credential.publicKey.slice(),
       counter: credential.counter,
     },
-  });
+  })
 
   if (!verification.verified) {
-    return false;
+    return false
   }
 
   await updateCredentialCounter(
     login.id,
     verification.authenticationInfo.newCounter,
-  );
+  )
 
-  const user = await getUserById(credential.userId);
+  const user = await getUserById(credential.userId)
 
   if (!user) {
-    return false;
+    return false
   }
 
   await sessions.save(response.headers, {
     userId: user.id,
     challenge: null,
-  });
+  })
 
-  return true;
+  return true
+}
+
+export async function logout() {
+  const { request, response } = requestInfo
+  await sessions.remove(request, response.headers)
 }

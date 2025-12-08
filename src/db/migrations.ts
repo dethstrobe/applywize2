@@ -27,7 +27,7 @@ export const migrations = {
           .addColumn("lastName", "text", (col) => col.notNull())
           .addColumn("email", "text")
           .addColumn("role", "text")
-          .addColumn("companyId", "integer", (col) =>
+          .addColumn("companyId", "text", (col) =>
             col.notNull().references("companies.id"),
           )
           .addColumn("createdAt", "text", (col) =>
@@ -72,12 +72,12 @@ export const migrations = {
           .addColumn("statusId", "integer", (col) =>
             col.notNull().defaultTo("1").references("applicationStatuses.id"),
           )
-          .addColumn("companyId", "integer", (col) =>
+          .addColumn("companyId", "text", (col) =>
             col.notNull().references("companies.id"),
           )
           .addColumn("salaryMin", "text")
           .addColumn("salaryMax", "text")
-          .addColumn("dateApplied", "integer")
+          .addColumn("dateApplied", "text")
           .addColumn("jobTitle", "text")
           .addColumn("jobDescription", "text")
           .addColumn("postingUrl", "text")

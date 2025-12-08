@@ -2,8 +2,8 @@ import { type LayoutProps } from "rwsdk/router"
 
 export const AuthLayout = ({ children }: LayoutProps) => {
   return (
-    <div className="bg-bg min-h-screen min-w-screen p-12">
-      <div className="grid grid-cols-2 min-h-[calc(100vh-96px)] rounded-xl border-2 border-[#D6D5C5]">
+    <div className="page-wrapper">
+      <div className="grid grid-cols-2 page">
         <div className="relative center bg-[url('/images/bg.png')] bg-repeat rounded-l-xl">
           <div className="-top-[110px] relative">
             <img src="/images/logo.svg" alt="Apply Wize" className="mx-auto" />

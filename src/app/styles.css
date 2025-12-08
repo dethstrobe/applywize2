@@ -127,6 +127,8 @@
   --color-tag-new: #db9a9f;
   --color-tag-rejected: #e4e3d4;
   --color-tag-offer: #aae198;
+
+  --spacing-page-side: 40px;
 }
 
 @utility center {
@@ -150,11 +152,21 @@
   input[type="text"] {
     @apply border-border border-1 rounded-md px-3 h-9 block w-full mb-2 text-base;
   }
+
+  nav {
+    @apply font-display font-medium text-sm;
+  }
 }
 
 @layer components {
   .page-title {
     @apply text-3xl;
+  }
+  .page-wrapper {
+    @apply bg-bg min-h-screen min-w-screen p-12;
+  }
+  .page {
+    @apply min-h-[calc(100vh-96px)] rounded-xl border-2 border-[#D6D5C5];
   }
 }
 

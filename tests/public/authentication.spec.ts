@@ -6,7 +6,7 @@ import {
   BrowserContext,
 } from "@playwright/test"
 import { randomUUID } from "crypto"
-import { selectors, simulateSuccessfulPasskeyInput } from "./util"
+import { selectors, simulateSuccessfulPasskeyInput } from "../util"
 import { withDocCategory, withDocMeta } from "@test2doc/playwright/DocMeta"
 import { screenshot } from "@test2doc/playwright/screenshots"
 

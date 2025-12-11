@@ -44,7 +44,7 @@
     "react": "19.2.1",
     "react-day-picker": "^9.11.1",
     "react-dom": "19.2.1",
-    "react-server-dom-webpack": "19.2.1",
+    "react-server-dom-webpack": "19.2.2",
     "rwsdk": "1.0.0-beta.22",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1"

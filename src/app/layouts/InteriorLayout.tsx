@@ -6,7 +6,7 @@ export const InteriorLayout = ({ children }: LayoutProps) => {
     <div className="page-wrapper">
       <div className="page bg-white">
         <Header />
-        <div>{children}</div>
+        <div className="px-page-side">{children}</div>
       </div>
     </div>
   )

@@ -10,6 +10,7 @@ import { Session } from "@/session/durableObject"
 import { AuthLayout } from "@/app/layouts/AuthLayout"
 import { List } from "./app/pages/applications/List"
 import { InteriorLayout } from "./app/layouts/InteriorLayout"
+import { New } from "./app/pages/applications/New"
 
 export { AppDurableObject } from "@/db/durableObject"
 export { SessionDurableObject } from "@/session/durableObject"
@@ -34,7 +35,10 @@ export default defineApp([
     index([isAuthenticated, Home]),
     layout(AuthLayout, [prefix("/auth", authRoutes())]),
     layout(InteriorLayout, [
-      prefix("/applications", [route("/", [isAuthenticated, List])]),
+      prefix("/applications", [
+        route("/", [isAuthenticated, List]),
+        route("/new", [isAuthenticated, New]),
+      ]),
       route("/settings", [isAuthenticated, () => <h1>Settings</h1>]),
       route("/account", [isAuthenticated, () => <h1>Account</h1>]),
     ]),

@@ -22,11 +22,21 @@ const applicationsQuery = db
     "applications.salaryMax",
     "companies.name as companyName",
     "applicationStatuses.status as status",
-    db.fn
-      .agg<
-        { firstName: string; lastName: string; id: string }[]
-      >("json_group_array", [sql`json_object('firstName', ${sql.ref("contacts.firstName")},'lastName', ${sql.ref("contacts.lastName")}, 'id', ${sql.ref("contacts.id")})`])
-      .as("contacts"),
+    sql<{ firstName: string; lastName: string; id: string }[]>`
+      COALESCE(
+        json_group_array(
+          CASE
+            WHEN ${sql.ref("contacts.id")} IS NOT NULL
+            THEN json_object(
+              'firstName', ${sql.ref("contacts.firstName")},
+              'lastName', ${sql.ref("contacts.lastName")},
+              'id', ${sql.ref("contacts.id")}
+            )
+          END
+        ) FILTER (WHERE ${sql.ref("contacts.id")} IS NOT NULL),
+        '[]'
+      )
+    `.as("contacts"),
   ])
   .groupBy([
     "applications.id",
@@ -55,19 +65,12 @@ export const List = async ({ request }: ListProps) => {
     .execute()
 
   return (
-    <div className="px-page-side">
+    <>
       <div className="flex justify-between items-center mb-5">
         <h1 className="page-title" id="all-applications">
           All Applications
         </h1>
-        <div>
-          <Button asChild>
-            <a href="#">
-              <Icon id="plus" />
-              New Application
-            </a>
-          </Button>
-        </div>
+        <NewApplicationButton />
       </div>
       <div className="mb-8">
         <ApplicationsTable applications={applications} />
@@ -85,13 +88,17 @@ export const List = async ({ request }: ListProps) => {
             </a>
           }
         </Button>
-        <Button asChild>
-          <a href="#">
-            <Icon id="plus" />
-            New Application
-          </a>
-        </Button>
+        <NewApplicationButton />
       </div>
-    </div>
+    </>
   )
 }
+
+const NewApplicationButton = () => (
+  <Button asChild>
+    <a href={link("/applications/new")}>
+      <Icon id="plus" />
+      New Application
+    </a>
+  </Button>
+)

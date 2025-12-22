@@ -1,8 +1,9 @@
-import { type Migrations } from "rwsdk/db"
+import { sql, type Migrations } from "rwsdk/db"
 
 export const migrations = {
   "001_initial_schema_setup": {
     async up(db) {
+      const defaultTime = sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`
       return [
         await db.schema
           .createTable("applicationStatuses")
@@ -13,9 +14,9 @@ export const migrations = {
         await db.schema
           .createTable("companies")
           .addColumn("id", "text", (col) => col.primaryKey())
-          .addColumn("name", "text", (col) => col.notNull())
+          .addColumn("name", "text", (col) => col.notNull().unique())
           .addColumn("createdAt", "text", (col) =>
-            col.notNull().defaultTo("(datetime('now'))"),
+            col.notNull().defaultTo(defaultTime),
           )
           .addColumn("updatedAt", "text")
           .execute(),
@@ -31,7 +32,7 @@ export const migrations = {
             col.notNull().references("companies.id"),
           )
           .addColumn("createdAt", "text", (col) =>
-            col.notNull().defaultTo("(datetime('now'))"),
+            col.notNull().defaultTo(defaultTime),
           )
           .addColumn("updatedAt", "text")
           .execute(),
@@ -42,7 +43,7 @@ export const migrations = {
           .addColumn("id", "text", (col) => col.primaryKey())
           .addColumn("username", "text", (col) => col.notNull().unique())
           .addColumn("createdAt", "text", (col) =>
-            col.notNull().defaultTo("(datetime('now'))"),
+            col.notNull().defaultTo(defaultTime),
           )
           .addColumn("updatedAt", "text")
           .execute(),
@@ -55,7 +56,7 @@ export const migrations = {
             col.notNull().unique().references("users.id").onDelete("cascade"),
           )
           .addColumn("createdAt", "text", (col) =>
-            col.notNull().defaultTo("(datetime('now'))"),
+            col.notNull().defaultTo(defaultTime),
           )
           .addColumn("credentialId", "text", (col) => col.notNull().unique())
           .addColumn("publicKey", "blob", (col) => col.notNull())
@@ -82,7 +83,7 @@ export const migrations = {
           .addColumn("jobDescription", "text")
           .addColumn("postingUrl", "text")
           .addColumn("createdAt", "text", (col) =>
-            col.notNull().defaultTo("(datetime('now'))"),
+            col.notNull().defaultTo(defaultTime),
           )
           .addColumn("updatedAt", "text")
           .addColumn("archived", "integer", (col) => col.notNull().defaultTo(0))

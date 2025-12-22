@@ -149,19 +149,62 @@
   h3 {
     @apply font-display font-bold;
   }
-  input[type="text"] {
+  textarea,
+  input {
     @apply border-border border-1 rounded-md px-3 h-9 block w-full mb-2 text-base;
+  }
+  textarea {
+    @apply h-20 py-3;
   }
 
   nav {
     @apply font-display font-medium text-sm;
   }
+
+  label,
+  .label {
+    @apply text-sm font-medium block;
+    @apply mb-2;
+  }
 }
 
 @layer components {
+  .box {
+    @apply border border-border rounded-md p-6 mb-5;
+  }
+
+  .field {
+    @apply pt-8;
+  }
+
+  .label-inside {
+    @apply relative flex border border-border outline-1 outline-white rounded-md mb-2 h-9;
+
+    label {
+      @apply text-sm font-medium px-3 bg-[#f4f4f5] rounded-sm center my-1 ml-1;
+    }
+
+    input[type="text"] {
+      @apply border-none flex-1 relative top-1 outline-none focus:border-none focus:outline-none h-auto;
+    }
+
+    &:has(input[type="text"]:focus) {
+      @apply outline-2 outline-[#919191];
+    }
+  }
+
+  .input-description {
+    @apply text-sm text-zinc-500 mb-2;
+  }
+
   .page-title {
     @apply text-3xl;
   }
+
+  .page-description {
+    @apply text-zinc-500;
+  }
+
   .page-wrapper {
     @apply bg-bg min-h-screen min-w-screen p-12;
   }

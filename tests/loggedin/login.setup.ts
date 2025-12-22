@@ -1,32 +1,12 @@
 import { test, expect } from "@playwright/test"
 import { TESTPASSKEY } from "../../src/scripts/test-passkey.js"
-import { selectors } from "../util.js"
+import { getTestDbPath, selectors } from "../util.js"
 import Database from "better-sqlite3"
 import {
   enableVirtualAuthenticator,
   addPasskeyCredential,
   simulateSuccessfulPasskeyInput,
 } from "@test2doc/playwright-passkey"
-import path from "path"
-import fs from "node:fs"
-
-function getTestDbPath(): string {
-  const doDir = path.join(
-    ".wrangler",
-    "state",
-    "v3",
-    "do",
-    "__change_me__-AppDurableObject",
-  )
-  const files = fs.readdirSync(doDir)
-  const sqliteFile = files.find((f) => f.endsWith(".sqlite"))
-
-  if (!sqliteFile) {
-    throw new Error(`No SQLite file found in ${doDir}`)
-  }
-
-  return path.join(doDir, sqliteFile)
-}
 
 test("Login setup", async ({ page }) => {
   const db = new Database(getTestDbPath())

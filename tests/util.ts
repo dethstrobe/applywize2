@@ -1,4 +1,24 @@
 import type { CDPSession, Page } from "@playwright/test"
+import path from "path"
+import fs from "node:fs"
+
+export function getTestDbPath(): string {
+  const doDir = path.join(
+    ".wrangler",
+    "state",
+    "v3",
+    "do",
+    "__change_me__-AppDurableObject",
+  )
+  const files = fs.readdirSync(doDir)
+  const sqliteFile = files.find((f) => f.endsWith(".sqlite"))
+
+  if (!sqliteFile) {
+    throw new Error(`No SQLite file found in ${doDir}`)
+  }
+
+  return path.join(doDir, sqliteFile)
+}
 
 export async function simulateSuccessfulPasskeyInput(
   client: CDPSession,
@@ -69,4 +89,21 @@ export const selectors = {
     "row",
     { name: "Frontend Developer Tech Corp Inc. JD John Doe 70000-110000" },
   ],
+  buttonNewApplication: ["link", { name: "New Application" }],
+  headerNewApplication: ["heading", { name: "Add an Application" }],
+  navBreadcrumb: ["navigation", { name: "Breadcrumb" }],
+  groupCompanyInfo: ["group", { name: "Company Information" }],
+  inputCompanyName: ["textbox", { name: "Company Name" }],
+  inputJobTitle: ["textbox", { name: "Job Title" }],
+  inputJobDescription: ["textbox", { name: "Job Description / Requirements" }],
+  inputSalaryMin: ["textbox", { name: "Min Salary Range" }],
+  inputSalaryMax: ["textbox", { name: "Max Salary Range" }],
+  inputApplicationUrl: ["textbox", { name: "Application URL" }],
+  buttonDatePicker: ["button", { name: "Pick a date" }],
+  dialog: ["dialog"],
+  buttonDate: ["button", { name: "Monday, December 15th," }],
+  comboboxStatus: ["combobox", { name: "Application Status" }],
+  listboxStatusOptions: ["listbox", { name: "Application Status" }],
+  options: ["option"],
+  buttonCreate: ["button", { name: "Create" }],
 } satisfies Record<string, Parameters<Page["getByRole"]>>

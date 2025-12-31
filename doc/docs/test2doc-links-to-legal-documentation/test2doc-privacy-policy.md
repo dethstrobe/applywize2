@@ -7,10 +7,10 @@ description: Where to find the Privacy Policy
 ## Login page
 
 Contains a link to the Privacy Policy
-![screenshot](./test2doc-1766365947803-9.png)
+![screenshot](./test2doc-1767155001815-9.png)
 
 ## Signup page
 
 Contains a link to the Privacy Policy
-![screenshot](./test2doc-1766365948292-10.png)
+![screenshot](./test2doc-1767155002202-10.png)
 

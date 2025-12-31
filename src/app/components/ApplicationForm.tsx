@@ -1,6 +1,9 @@
-"use server"
+"use client"
 
-import { createApplication } from "../pages/applications/functions"
+import {
+  ContactFormData,
+  createApplication,
+} from "../pages/applications/functions"
 import { Button } from "./ui/button"
 import { DatePicker } from "./ui/datepicker"
 import {
@@ -10,17 +13,59 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select"
-import { db } from "@/db/db"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet"
+import { Icon } from "./Icon"
+import { ContactForm } from "./ContactForm"
+import { useState } from "react"
+import { Avatar, AvatarFallback } from "./ui/avatar"
+import { toast } from "sonner"
 
-export const ApplicationForm = async () => {
-  const applicationStatusesQuery = await db
-    .selectFrom("applicationStatuses")
-    .selectAll()
-    .execute()
+interface ApplicationFormProps {
+  applicationStatusesQuery: {
+    id: number
+    status: string
+  }[]
+}
+
+export const ApplicationForm = ({
+  applicationStatusesQuery,
+}: ApplicationFormProps) => {
+  const [contacts, setContacts] = useState<ContactFormData[]>([])
+
+  const [isContactSheetOpen, setIsContactSheetOpen] = useState(false)
+
+  const submitContactForm = (formData: FormData) => {
+    setContacts((prevContacts) => [
+      ...prevContacts,
+      {
+        id: crypto.randomUUID(),
+        firstName: formData.get("firstName") as string,
+        lastName: formData.get("lastName") as string,
+        role: formData.get("role") as string,
+        email: formData.get("email") as string,
+      },
+    ])
+    setIsContactSheetOpen(false)
+  }
+
+  const submitApplicationForm = async (formData: FormData) => {
+    const res = await createApplication(formData, contacts)
+
+    if ("error" in res) {
+      res.error.forEach(({ message }) => toast.error(message))
+    }
+  }
 
   return (
     <form
-      action={createApplication}
+      action={submitApplicationForm}
       className="grid grid-cols-2 gap-x-50 mb-20"
     >
       {/* left side */}
@@ -135,11 +180,66 @@ export const ApplicationForm = async () => {
         </div>
 
         <div className="box">
-          <h3>Contacts</h3>
+          <h3 id="contact-label">Contacts</h3>
           <p className="input-description">
             Invite your team members to collaborate.
           </p>
-          <div>Contact Card</div>
+          <ul aria-labelledby="contact-label">
+            {contacts.map((contact) => (
+              <li
+                key={contact.id}
+                className="relative group/card flex items-center gap-4 mb-6"
+              >
+                <div className="pr-5 absolute top-2 -left-[37px]">
+                  <button
+                    role="button"
+                    className="opacity-0 group-hover/card:opacity-100 focus:opacity-100 rounded-full bg-destructive p-1"
+                    aria-label={`Remove ${contact.firstName} ${contact.lastName}`}
+                    onClick={() =>
+                      setContacts((contacts) =>
+                        contacts.filter(({ id }) => id !== contact.id),
+                      )
+                    }
+                  >
+                    <Icon id="close" size={16} />
+                  </button>
+                </div>
+                <Avatar className="size-10">
+                  <AvatarFallback>
+                    {contact.firstName.charAt(0)}
+                    {contact.lastName.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <h4>
+                    {contact.firstName} {contact.lastName}
+                  </h4>
+                  <p className="text-sm text-zinc-500">{contact.role}</p>
+                </div>
+                <a
+                  aria-label={`Email to ${contact.email}`}
+                  href={`mailto:${contact.email}`}
+                >
+                  <Icon id="mail" size={24} />
+                </a>
+              </li>
+            ))}
+          </ul>
+          <Sheet open={isContactSheetOpen} onOpenChange={setIsContactSheetOpen}>
+            <SheetTrigger className="flex items-center gap-2 font-poppins text-sm font-bold bg-secondary py-3 px-6 rounded-md cursor-pointer">
+              <Icon id="plus" size={16} />
+              Add a Contact
+            </SheetTrigger>
+            <SheetContent className="pt-[100px] px-12">
+              <SheetHeader>
+                <SheetTitle id="add-contact-title">Add a Contact</SheetTitle>
+                <SheetDescription id="add-contact-description">
+                  Add a Contact to this application.
+                </SheetDescription>
+              </SheetHeader>
+              <ContactForm submitContactForm={submitContactForm} />
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
       {/* footer with submission button */}

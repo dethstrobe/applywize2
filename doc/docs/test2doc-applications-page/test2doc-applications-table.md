@@ -19,5 +19,5 @@ On the Applications page
         
 
 Which will be displayed in the table
-![screenshot](./test2doc-1766365950340-1.png)
+![screenshot](./test2doc-1767155004499-1.png)
 

@@ -26,7 +26,7 @@ export const migrations = {
           .addColumn("id", "text", (col) => col.primaryKey())
           .addColumn("firstName", "text", (col) => col.notNull())
           .addColumn("lastName", "text", (col) => col.notNull())
-          .addColumn("email", "text")
+          .addColumn("email", "text", (col) => col.notNull().unique())
           .addColumn("role", "text")
           .addColumn("companyId", "text", (col) =>
             col.notNull().references("companies.id"),

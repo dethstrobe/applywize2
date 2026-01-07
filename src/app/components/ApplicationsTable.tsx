@@ -49,11 +49,14 @@ export const ApplicationsTable = ({ applications }: Props) => {
               </Badge>
             </TableCell>
             <TableCell>
-              {new Date(application.dateApplied).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {new Date(application.dateApplied ?? 0).toLocaleDateString(
+                "en-US",
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                },
+              )}
             </TableCell>
             <TableCell>{application.jobTitle}</TableCell>
             <TableCell>{application.companyName}</TableCell>

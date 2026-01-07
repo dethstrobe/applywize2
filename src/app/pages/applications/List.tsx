@@ -4,6 +4,7 @@ import { Button } from "@/app/components/ui/button"
 import { link } from "@/app/shared/links"
 import { db } from "@/db/db"
 import { sql } from "rwsdk/db"
+import { RequestInfo } from "rwsdk/worker"
 
 const applicationsQuery = db
   .selectFrom("applications")
@@ -52,11 +53,7 @@ export type ApplicationsWithRelations = Awaited<
   ReturnType<typeof applicationsQuery.execute>
 >
 
-interface ListProps {
-  request: Request
-}
-
-export const List = async ({ request }: ListProps) => {
+export const List = async ({ request }: RequestInfo) => {
   const url = new URL(request.url)
   const status = url.searchParams.get("status")
 

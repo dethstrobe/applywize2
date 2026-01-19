@@ -99,9 +99,10 @@ export const selectors = {
   inputSalaryMin: ["textbox", { name: "Min Salary Range" }],
   inputSalaryMax: ["textbox", { name: "Max Salary Range" }],
   inputApplicationUrl: ["textbox", { name: "Application URL" }],
-  buttonDatePicker: ["button", { name: "Pick a date" }],
+  buttonDatePicker: ["button", { name: "Application submission date" }],
   dialog: ["dialog"],
   buttonDate: ["button", { name: "Monday, December 15th," }],
+  buttonEditDate: ["button", { name: "Tuesday, December 16th," }],
   comboboxStatus: ["combobox", { name: "Application Status" }],
   listboxStatusOptions: ["listbox", { name: "Application Status" }],
   options: ["option"],
@@ -118,6 +119,62 @@ export const selectors = {
   headingTestingContact2: ["heading", { name: "Jane Smith" }],
   headingTestingContact3: ["heading", { name: "Joe Public" }],
   buttonContactEmail: ["link", { name: "Email to john.doe@example.com" }],
+  buttonDetailsContactEmail: [
+    "link",
+    { name: "Email to john.doe@techcorp.com" },
+  ],
   buttonRemoveContact: ["button", { name: "Remove Jane Smith" }],
   regionToast: ["region", { name: "Notifications alt+T" }],
+  linkDetails: [
+    "link",
+    { name: "View details for Tech Corp Inc. Software Engineer" },
+  ],
+  headingDetails: ["heading", { name: "Software Engineer" }],
+  buttonViewApplication: ["link", { name: "View Application" }],
+  mainDetails: ["main", { name: "About this Role" }],
+  regionCompensation: ["region", { name: "Compensation" }],
+  regionContacts: ["region", { name: "Contacts" }],
+  buttonDetailsEdit: ["link", { name: "Edit", exact: true }],
+  buttonDetailsDelete: ["button", { name: "Delete" }],
+  headingDetailsDeleteDialog: ["heading", { name: "Are you absolutely sure?" }],
+  buttonDetailsCancel: ["button", { name: "Nevermind" }],
+  buttonDetailsConfirm: ["button", { name: "Yes, Delete It" }],
+  applicationRowToDelete: [
+    "row",
+    { name: "SWE Delete Details LLC. DM Delete McDetailson $0-$0" },
+  ],
+  buttonViewDetailsForDeleteApplication: [
+    "link",
+    { name: "View details for Delete Details LLC. SWE" },
+  ],
+  applicationRowToEdit: [
+    "row",
+    {
+      name: "DevOps Engineer Edit Details Co. EM Edit McEditson $0-$0",
+    },
+  ],
+  buttonViewDetailsForEditApplication: [
+    "link",
+    { name: "View details for Edit Details Co. DevOps Engineer" },
+  ],
+  headingEditApplication: ["heading", { name: "Edit DevOps Engineer" }],
+  linkEditApplicationDetails: [
+    "link",
+    { name: "DevOps Engineer at Edit Details Co." },
+  ],
+  buttonRemoveEditContact: ["button", { name: "Remove Edit McEditson" }],
+  buttonCancelEdit: ["link", { name: "Cancel" }],
+  buttonUpdateEdit: ["button", { name: "Update" }],
+  headingEditedDetails: [
+    "heading",
+    { name: "Edited Developer Operations Engineer" },
+  ],
 } satisfies Record<string, Parameters<Page["getByRole"]>>
+
+export enum StatusOption {
+  New,
+  Applied,
+  Interview,
+  Rejected,
+  Offer,
+}

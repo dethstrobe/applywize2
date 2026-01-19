@@ -11,6 +11,8 @@ import { AuthLayout } from "@/app/layouts/AuthLayout"
 import { List } from "./app/pages/applications/List"
 import { InteriorLayout } from "./app/layouts/InteriorLayout"
 import { New } from "./app/pages/applications/New"
+import { Details } from "./app/pages/applications/Details"
+import { Edit } from "./app/pages/applications/Edit"
 
 export { AppDurableObject } from "@/db/durableObject"
 export { SessionDurableObject } from "@/session/durableObject"
@@ -36,8 +38,11 @@ export default defineApp([
     layout(AuthLayout, [prefix("/auth", authRoutes())]),
     layout(InteriorLayout, [
       prefix("/applications", [
-        route("/", [isAuthenticated, List]),
-        route("/new", [isAuthenticated, New]),
+        isAuthenticated,
+        route("/", List),
+        route("/new", New),
+        route("/:id", Details),
+        route("/:id/edit", Edit),
       ]),
       route("/settings", [isAuthenticated, () => <h1>Settings</h1>]),
       route("/account", [isAuthenticated, () => <h1>Account</h1>]),

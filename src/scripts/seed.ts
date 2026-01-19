@@ -64,7 +64,7 @@ export default async () => {
       id: crypto.randomUUID(),
       firstName: "John",
       lastName: "Doe",
-      email: "jdoe@example.com",
+      email: "john.doe@techcorp.com",
       role: "Hiring Manager",
       companyId: companyId,
       createdAt: timeAdded,

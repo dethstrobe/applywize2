@@ -1,10 +1,6 @@
 "use client"
 
-import {
-  ContactFormData,
-  createApplication,
-} from "../pages/applications/functions"
-import { Button } from "./ui/button"
+import { ContactFormData } from "../pages/applications/functions"
 import { DatePicker } from "./ui/datepicker"
 import {
   Select,
@@ -26,18 +22,30 @@ import { ContactForm } from "./ContactForm"
 import { useState } from "react"
 import { Avatar, AvatarFallback } from "./ui/avatar"
 import { toast } from "sonner"
+import { detailsQuery } from "@/app/pages/applications/queries"
 
 interface ApplicationFormProps {
   applicationStatusesQuery: {
     id: number
     status: string
   }[]
+  defaultValues?: Awaited<ReturnType<typeof detailsQuery.execute>>[number]
+  footerActions: React.ReactNode
+  formAction: (
+    formData: FormData,
+    contacts: ContactFormData[],
+  ) => Promise<Response | { error: { message: string }[] }>
 }
 
 export const ApplicationForm = ({
   applicationStatusesQuery,
+  defaultValues,
+  footerActions,
+  formAction,
 }: ApplicationFormProps) => {
-  const [contacts, setContacts] = useState<ContactFormData[]>([])
+  const [contacts, setContacts] = useState<ContactFormData[]>(
+    defaultValues?.contacts ?? [],
+  )
 
   const [isContactSheetOpen, setIsContactSheetOpen] = useState(false)
 
@@ -56,7 +64,7 @@ export const ApplicationForm = ({
   }
 
   const submitApplicationForm = async (formData: FormData) => {
-    const res = await createApplication(formData, contacts)
+    const res = await formAction(formData, contacts)
 
     if ("error" in res) {
       res.error.forEach(({ message }) => toast.error(message))
@@ -64,10 +72,7 @@ export const ApplicationForm = ({
   }
 
   return (
-    <form
-      action={submitApplicationForm}
-      className="grid grid-cols-2 gap-x-50 mb-20"
-    >
+    <form action={submitApplicationForm} className="two-column-grid">
       {/* left side */}
       <fieldset>
         <legend className="text-2xl font-bold" id="company-info-heading">
@@ -80,6 +85,7 @@ export const ApplicationForm = ({
             id="company"
             name="company"
             aria-describedby="company-hint"
+            defaultValue={defaultValues?.companyName}
           />
           <p className="input-description" id="company-hint">
             What company caught your eye?
@@ -93,6 +99,7 @@ export const ApplicationForm = ({
             id="jobTitle"
             name="jobTitle"
             aria-describedby="jobTitle-hint"
+            defaultValue={defaultValues?.jobTitle ?? ""}
           />
           <p className="input-description" id="jobTitle-hint">
             What&apos;s the job you&apos;re after?
@@ -105,6 +112,7 @@ export const ApplicationForm = ({
             id="jobDescription"
             name="jobDescription"
             aria-describedby="jobDescription-hint"
+            defaultValue={defaultValues?.jobDescription ?? ""}
           />
           <p className="input-description" id="jobDescription-hint">
             What are they looking for?
@@ -126,6 +134,7 @@ export const ApplicationForm = ({
                 name="salaryMin"
                 aria-labelledby="salary-min salary-range"
                 aria-describedby="salary-hint"
+                defaultValue={defaultValues?.salaryMin ?? ""}
               />
             </div>
             <div className="flex-1 label-inside">
@@ -138,6 +147,7 @@ export const ApplicationForm = ({
                 name="salaryMax"
                 aria-labelledby="salary-max salary-range"
                 aria-describedby="salary-hint"
+                defaultValue={defaultValues?.salaryMax ?? ""}
               />
             </div>
           </div>
@@ -148,7 +158,13 @@ export const ApplicationForm = ({
 
         <div className="field">
           <label htmlFor="url">Application URL</label>
-          <input type="url" id="url" name="url" aria-describedby="url-hint" />
+          <input
+            type="url"
+            id="url"
+            name="url"
+            aria-describedby="url-hint"
+            defaultValue={defaultValues?.postingUrl ?? ""}
+          />
           <p className="input-description" id="url-hint">
             Where can we apply?
           </p>
@@ -158,14 +174,20 @@ export const ApplicationForm = ({
       {/* right side */}
       <div>
         <div className="box">
-          <DatePicker label="Application submission date" />
+          <DatePicker
+            label="Application submission date"
+            defaultValue={defaultValues?.dateApplied ?? undefined}
+          />
         </div>
 
         <div className="box">
           <label id="application-status-label" htmlFor="application-status">
             Application Status
           </label>
-          <Select name="status">
+          <Select
+            name="status"
+            defaultValue={defaultValues?.statusId.toString()}
+          >
             <SelectTrigger id="application-status">
               <SelectValue placeholder="Select a Status" />
             </SelectTrigger>
@@ -243,8 +265,8 @@ export const ApplicationForm = ({
         </div>
       </div>
       {/* footer with submission button */}
-      <div className="col-span-2">
-        <Button type="submit">Create</Button>
+      <div className="col-span-2 field flex items-center gap-4">
+        {footerActions}
       </div>
     </form>
   )

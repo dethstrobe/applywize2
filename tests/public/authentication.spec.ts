@@ -278,13 +278,31 @@ test.describe(withDocMeta("Protected Routes", {}), () => {
   }) => {
     await test.step("- `/applications`", async () => {
       await page.goto("/applications")
+      await expect(page).toHaveURL("/auth/login")
+    })
 
+    await test.step("- `/applications/new`", async () => {
+      await page.goto("/applications/new")
+      await expect(page).toHaveURL("/auth/login")
+    })
+
+    await test.step("- `/applications/:id`", async () => {
+      await page.goto("/applications/test-id")
+      await expect(page).toHaveURL("/auth/login")
+    })
+
+    await test.step("- `/settings`", async () => {
+      await page.goto("/settings")
+      await expect(page).toHaveURL("/auth/login")
+    })
+
+    await test.step("- `/account`", async () => {
+      await page.goto("/account")
       await expect(page).toHaveURL("/auth/login")
     })
 
     await test.step("- `/`", async () => {
       await page.goto("/")
-
       await expect(page).toHaveURL("/auth/login")
     })
   })

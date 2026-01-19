@@ -8,13 +8,12 @@ import {
   BreadcrumbSeparator,
 } from "@/app/components/ui/breadcrumb"
 import { link } from "@/app/shared/links"
-import { db } from "@/db/db"
+import { applicationStatusesQuery } from "./queries"
+import { Button } from "@/app/components/ui/button"
+import { createApplication } from "./functions"
 
 export const New = async () => {
-  const applicationStatusesQuery = await db
-    .selectFrom("applicationStatuses")
-    .selectAll()
-    .execute()
+  const applicationStatuses = await applicationStatusesQuery.execute()
   return (
     <>
       <div className="mb-12 -mt-7 pl-20">
@@ -38,7 +37,11 @@ export const New = async () => {
           Manage your account settings and set e-mail preferences.
         </p>
       </div>
-      <ApplicationForm applicationStatusesQuery={applicationStatusesQuery} />
+      <ApplicationForm
+        applicationStatusesQuery={applicationStatuses}
+        footerActions={<Button type="submit">Create</Button>}
+        formAction={createApplication}
+      />
     </>
   )
 }

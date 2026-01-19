@@ -14,10 +14,13 @@ import {
 
 interface DatePickerProps {
   label: string
+  defaultValue?: string
 }
 
-export function DatePicker({ label }: DatePickerProps) {
-  const [date, setDate] = React.useState<Date>()
+export function DatePicker({ label, defaultValue }: DatePickerProps) {
+  const [date, setDate] = React.useState<Date | undefined>(
+    defaultValue ? new Date(defaultValue) : undefined,
+  )
 
   return (
     <>
@@ -40,7 +43,7 @@ export function DatePicker({ label }: DatePickerProps) {
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
-          <Calendar mode="single" selected={date} onSelect={setDate} />
+          <Calendar mode="single" selected={date} onSelect={setDate} required />
         </PopoverContent>
       </Popover>
       <input type="hidden" name="applicationDate" value={date?.toISOString()} />

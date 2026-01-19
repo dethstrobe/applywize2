@@ -169,6 +169,10 @@
 }
 
 @layer components {
+  .two-column-grid {
+    @apply grid grid-cols-2 gap-x-50 mb-20;
+  }
+
   .box {
     @apply border border-border rounded-md p-6 mb-5;
   }

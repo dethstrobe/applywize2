@@ -1,7 +1,7 @@
 import { test, expect, Locator } from "@playwright/test"
 import { withDocCategory, withDocMeta } from "@test2doc/playwright/DocMeta"
 import { screenshot } from "@test2doc/playwright/screenshots"
-import { selectors, getTestDbPath } from "../util"
+import { selectors, getTestDbPath, StatusOption } from "../util"
 import Database from "better-sqlite3"
 
 test.describe(
@@ -171,14 +171,6 @@ test.describe(
             - Rejected
             - Offer
             `, async () => {
-            enum StatusOption {
-              New,
-              Applied,
-              Interview,
-              Rejected,
-              Offer,
-            }
-
             const options = page.getByRole(...selectors.options)
             const newOption = options.nth(StatusOption.New)
 

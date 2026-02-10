@@ -13,11 +13,11 @@ export default async () => {
   await db
     .insertInto("applicationStatuses")
     .values([
-      { id: 1, status: "New" },
-      { id: 2, status: "Applied" },
-      { id: 3, status: "Interview" },
-      { id: 4, status: "Rejected" },
-      { id: 5, status: "Offer" },
+      { status: "New" },
+      { status: "Applied" },
+      { status: "Interview" },
+      { status: "Rejected" },
+      { status: "Offer" },
     ])
     .execute()
 

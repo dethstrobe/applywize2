@@ -1,16 +1,6 @@
 import { defineLinks } from "rwsdk/router"
 
-export const link = defineLinks([
-  "/",
-  "/auth/login",
-  "/auth/signup",
-  "/auth/logout",
-  "/applications",
-  "/applications/new",
-  "/applications/:id",
-  "/applications/:id/edit",
-  "/legal/privacy",
-  "/legal/terms",
-  "/settings",
-  "/account",
-])
+import type * as Worker from "../../worker"
+type App = typeof Worker.default
+
+export const link = defineLinks<App>()

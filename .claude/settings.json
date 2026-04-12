@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /Users/williamjohnson/repo/applywize2/*.json)",
+      "Bash(pnpm outdated:*)",
+      "Bash(pnpm update:*)",
+      "Read(//Users/williamjohnson/repo/schedulelord/src/**)",
+      "Read(//Users/williamjohnson/repo/schedulelord/**)",
+      "Bash(npx tsc:*)"
+    ]
+  }
+}

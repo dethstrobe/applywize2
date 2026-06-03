@@ -16,6 +16,9 @@ import { Edit } from "./app/pages/applications/Edit"
 
 export { AppDurableObject } from "@/db/durableObject"
 export { SessionDurableObject } from "@/session/durableObject"
+export { ReproDurableObject } from "@/repro/reproDurableObject"
+
+import { reproRoute } from "@/repro/route"
 
 export type AppContext = {
   session: Session | null
@@ -32,6 +35,7 @@ const isAuthenticated = ({ ctx }: { ctx: AppContext }) => {
 
 export default defineApp([
   setCommonHeaders(),
+  reproRoute,
   setupPasskeyAuth(),
   render(Document, [
     index([isAuthenticated, Home]),

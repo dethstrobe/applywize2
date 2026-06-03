@@ -36,12 +36,20 @@
         "name": "SESSION_DURABLE_OBJECT",
         "class_name": "SessionDurableObject",
       },
+      {
+        "name": "REPRO_DURABLE_OBJECT",
+        "class_name": "ReproDurableObject",
+      },
     ],
   },
   "migrations": [
     {
       "tag": "v1",
       "new_sqlite_classes": ["AppDurableObject"],
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": ["ReproDurableObject"],
     },
   ],
 }

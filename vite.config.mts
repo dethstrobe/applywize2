@@ -10,6 +10,7 @@ export default defineConfig({
   plugins: [
     cloudflare({
       viteEnvironment: { name: "worker" },
+      auxiliaryWorkers: [{ configPath: "./aux-worker/wrangler.jsonc" }],
     }),
     redwood(),
     tailwindcss(),

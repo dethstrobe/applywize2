@@ -1,12 +1,6 @@
-import {
-  test,
-  expect,
-  CDPSession,
-  Page,
-  BrowserContext,
-} from "@playwright/test"
+import { test, expect, Page, BrowserContext } from "@playwright/test"
 import { randomUUID } from "crypto"
-import { selectors, simulateSuccessfulPasskeyInput } from "./util"
+import { selectors } from "./util"
 import { withDocCategory, withDocMeta } from "@test2doc/playwright/DocMeta"
 import { screenshot } from "@test2doc/playwright/screenshots"
 
@@ -14,8 +8,6 @@ test.describe.serial(
   withDocMeta("Authentication Flow", { sidebar_position: 1 }),
   () => {
     const username = `testuser-${randomUUID()}`
-    let client: CDPSession
-    let authenticatorId: string
     let sharedContext: BrowserContext
     let sharedPage: Page
 
@@ -26,31 +18,19 @@ test.describe.serial(
     })
 
     test.afterAll(async () => {
-      await client?.detach()
       await sharedContext?.close()
     })
 
     test("Register a new user", async ({}, testInfo) => {
       await test.step("We support [Passkeys](https://docs.github.com/en/authentication/authenticating-with-a-passkey/about-passkeys) by [WebAuthn](https://en.wikipedia.org/wiki/WebAuthn).\n\n", async () => {
-        client = await sharedPage.context().newCDPSession(sharedPage)
-        await client.send("WebAuthn.enable")
-
-        const result = await client.send("WebAuthn.addVirtualAuthenticator", {
-          options: {
-            protocol: "ctap2",
-            transport: "internal",
-            hasResidentKey: true,
-            hasUserVerification: true,
-            isUserVerified: true,
-            automaticPresenceSimulation: true,
-          },
-        })
-
-        authenticatorId = result.authenticatorId
+        await sharedContext.credentials.install()
       })
 
       await test.step("To get started with registration, goto the sign up page at `/auth/signup`.", async () => {
         await sharedPage.goto("auth/signup")
+        // Wait for the page's JavaScript to finish loading, or the click can
+        // land before React is ready to handle it
+        await sharedPage.waitForLoadState("networkidle")
 
         await expect(
           sharedPage.getByRole(...selectors.headingSignup),
@@ -58,10 +38,7 @@ test.describe.serial(
 
         await screenshot(testInfo, sharedPage)
 
-        const result = await client.send("WebAuthn.getCredentials", {
-          authenticatorId,
-        })
-        expect(result.credentials).toHaveLength(0)
+        expect(await sharedContext.credentials.get()).toHaveLength(0)
       })
 
       await test.step("\n\nFilling out the registration form and ", async () => {
@@ -80,12 +57,7 @@ test.describe.serial(
             options: { annotation: { text: "Click to register" } },
           },
         ])
-        await simulateSuccessfulPasskeyInput(
-          client,
-          authenticatorId,
-          async () =>
-            await sharedPage.getByRole(...selectors.buttonRegister).click(),
-        )
+        await sharedPage.getByRole(...selectors.buttonRegister).click()
       })
 
       await test.step("\n\nOn successful registration you will be redirect to login page.", async () => {
@@ -95,16 +67,16 @@ test.describe.serial(
 
         await screenshot(testInfo, sharedPage)
 
-        const result = await client.send("WebAuthn.getCredentials", {
-          authenticatorId,
-        })
-        expect(result.credentials).toHaveLength(1)
+        expect(await sharedContext.credentials.get()).toHaveLength(1)
       })
     })
 
     test("Login with existing user", async ({}, testInfo) => {
       await test.step("While on the login page at `/auth/login`.\n\n", async () => {
         await sharedPage.goto("auth/login")
+        // Wait for the page's JavaScript to finish loading, or the click can
+        // land before React is ready to handle it
+        await sharedPage.waitForLoadState("networkidle")
 
         await expect(
           sharedPage.getByRole(...selectors.headingLogin),
@@ -121,12 +93,7 @@ test.describe.serial(
             annotation: { text: "Click to login" },
           },
         )
-        await simulateSuccessfulPasskeyInput(
-          client,
-          authenticatorId,
-          async () =>
-            await sharedPage.getByRole(...selectors.buttonLogin).click(),
-        )
+        await sharedPage.getByRole(...selectors.buttonLogin).click()
       })
 
       await test.step("\n\nOn successful login you will be taken to the applications page.\n\n", async () => {

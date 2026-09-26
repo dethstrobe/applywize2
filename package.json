@@ -50,7 +50,7 @@
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.13.10",
     "@cloudflare/workers-types": "4.20251004.0",
-    "@playwright/test": "^1.56.1",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.1.16",
     "@test2doc/playwright": "^1.0.1",
     "@types/node": "~24.5.2",

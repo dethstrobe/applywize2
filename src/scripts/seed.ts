@@ -39,8 +39,8 @@ export default async () => {
     .values({
       id: crypto.randomUUID(),
       userId: TESTPASSKEY.userId,
-      credentialId: TESTPASSKEY.credentialDbId,
-      publicKey: Uint8Array.from(TESTPASSKEY.publicKey),
+      credentialId: TESTPASSKEY.id,
+      publicKey: Uint8Array.from(TESTPASSKEY.cosePublicKey),
       counter: 0,
       createdAt: timeAdded,
     })
